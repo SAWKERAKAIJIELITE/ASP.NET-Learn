@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/LearnForge.IntegrationTests/LearnForge.IntegrationTests.csproj" />
+    <Project Path="tests/LearnForge.UnitTests/LearnForge.UnitTests.csproj" />
+  </Folder>
+  <Project Path="LearnForge.API/LearnForge.API.csproj" />
+  <Project Path="LearnForge.Application/LearnForge.Application.csproj" />
+  <Project Path="LearnForge.Domain/LearnForge.Domain.csproj" />
+  <Project Path="LearnForge.Infrastructure/LearnForge.Infrastructure.csproj" />
+</Solution>

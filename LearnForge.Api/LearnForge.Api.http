@@ -1,0 +1,6 @@
+@LearnForge.Api_HostAddress = http://localhost:5044
+
+GET {{LearnForge.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
