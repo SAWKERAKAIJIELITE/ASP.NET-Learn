@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LearnForge.Application\LearnForge.Application.csproj" />
-    <!-- <ProjectReference Include="..\LearnForge.Domain\LearnForge.Domain.csproj" /> -->
+    <ProjectReference Include="..\LearnForge.Domain\LearnForge.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

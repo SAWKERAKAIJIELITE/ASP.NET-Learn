@@ -22,28 +22,28 @@ public sealed class LearnForgeDbContext(DbContextOptions<LearnForgeDbContext> op
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LearnForgeDbContext).Assembly);
     }
 
-    // public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    // {
-    //     foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-    //     {
-    //         switch (entry.State)
-    //         {
-    //             case EntityState.Added:
-    //                 entry.Entity.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-    //                 // entry.Entity.UpdatedAt = DateTime.UtcNow;
-    //                 break;
-    //             case EntityState.Modified:
-    //                 entry.Entity.LastUpdated = DateOnly.FromDateTime(DateTime.Now);
-    //                 break;
-    //             case EntityState.Detached:
-    //             case EntityState.Unchanged:
-    //             case EntityState.Deleted:
-    //                 break;
-    //             default:
-    //                 throw new ArgumentOutOfRangeException();
-    //         }
-    //     }
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
+                    // entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    break;
+                case EntityState.Detached:
+                case EntityState.Unchanged:
+                case EntityState.Deleted:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
-    //     return await base.SaveChangesAsync(cancellationToken);
-    // }
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 }

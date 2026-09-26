@@ -14,6 +14,14 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddHttpLogging(options =>
+    // Log the request path, status codes, and query strings
+    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders
+                            | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders
+);
+
 builder.Services.AddValidation();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<CreateCourseHandler>();
@@ -27,6 +35,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseHttpLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

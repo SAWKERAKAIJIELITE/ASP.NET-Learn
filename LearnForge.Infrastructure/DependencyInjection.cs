@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using LearnForge.Application.Common.Interfaces;
 using LearnForge.Infrastructure.Persistence;
+using LearnForge.Infrastructure.Persistence.Interceptors;
 
 namespace LearnForge.Infrastructure;
 
@@ -15,7 +16,7 @@ public static class DependencyInjection
     )
     {
         services.AddDbContext<LearnForgeDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")).AddInterceptors(new SoftDeleteInterceptor())
         );
 
         services.AddScoped<ICourseRepository, CourseRepository>();
