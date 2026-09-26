@@ -4,7 +4,7 @@ using LearnForge.Domain.Enums;
 
 namespace LearnForge.Domain.Entities;
 
-public sealed class Lesson : PublishableEntity
+public sealed class Lesson : OrderedEntity
 {
     private Lesson()
     {
@@ -16,32 +16,20 @@ public sealed class Lesson : PublishableEntity
         int order,
         string? description = null,
         string? contentMarkdown = null
-    )
+    ) : base(title, order)
     {
         if (courseModuleId == Guid.Empty)
             throw new DomainException("Course module is required.");
 
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Lesson title is required.");
-
         // if (string.IsNullOrWhiteSpace(contentMarkdown))
         //     throw new DomainException("Lesson content is required.");
 
-        if (order < 1)
-            throw new DomainException("Lesson order must be greater than zero.");
-
         CourseModuleId = courseModuleId;
-        Title = title.Trim();
-        Order = order;
-        Description = description?.Trim();
+        Description = DescriptionValidator.Validate(description, required: false, EntityLabel)!;
         ContentMarkdown = contentMarkdown?.Trim();
     }
 
     public Guid CourseModuleId { get; private set; }
-
-    public string Title { get; private set; } = null!;
-
-    public int Order { get; private set; }
 
     public string? Description { get; private set; }
 
@@ -55,33 +43,15 @@ public sealed class Lesson : PublishableEntity
 
     public IReadOnlyList<LessonResource> Resources => _resources;
 
-    public void Rename(string title)
-    {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Lesson title is required.");
+    public void ChangeDescription(string? description = null) =>
+        Description = DescriptionValidator.Validate(description, required: false, EntityLabel)!;
 
-        Title = title.Trim();
-    }
-
-    public void ChangeDescription(string? description = null)
-    {
-        Description = description?.Trim();
-    }
-
-    public void UpdateContent(string? markdown=null)
+    public void UpdateContent(string? markdown = null)
     {
         if (Status == MaterialStatus.Published && string.IsNullOrWhiteSpace(markdown))
             throw new DomainException("A published Lesson can't have empty content. Unpublish it first.");
 
         ContentMarkdown = markdown?.Trim();
-    }
-
-    public void ChangeOrder(int order)
-    {
-        if (order < 1)
-            throw new DomainException("Lesson order must be greater than zero.");
-
-        Order = order;
     }
 
     protected override void EnsureCanPublish()
@@ -101,19 +71,7 @@ public sealed class Lesson : PublishableEntity
 
     public bool RemoveActivity(Guid activityId)
     {
-        var activityIndex = _activities.FindIndex(x => x.Id == activityId);
-
-        if (activityIndex == -1)
-            return false;
-
-        _activities.RemoveAt(activityIndex);
-
-        for (var index = activityIndex; index < _activities.Count; index++)
-        {
-            _activities[index].ChangeOrder(index + 1);
-        }
-
-        return true;
+        return OrderedList.Remove(_activities, activityId, (l, order) => l.ChangeOrder(order));
     }
 
     public LessonResource AddResource(LessonResourceType type, string title, string url)
@@ -127,18 +85,6 @@ public sealed class Lesson : PublishableEntity
 
     public bool RemoveResource(Guid resourceId)
     {
-        var resourceIndex = _resources.FindIndex(x => x.Id == resourceId);
-
-        if (resourceIndex == -1)
-            return false;
-
-        _resources.RemoveAt(resourceIndex);
-
-        for (var index = resourceIndex; index < _resources.Count; index++)
-        {
-            _resources[index].ChangeOrder(index + 1);
-        }
-
-        return true;
+        return OrderedList.Remove(_resources, resourceId, (l, order) => l.ChangeOrder(order));
     }
 }

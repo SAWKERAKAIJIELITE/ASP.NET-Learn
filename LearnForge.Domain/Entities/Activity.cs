@@ -4,11 +4,9 @@ using LearnForge.Domain.Exceptions;
 
 namespace LearnForge.Domain.Entities;
 
-public sealed class Activity : PublishableEntity
+public sealed class Activity : OrderedEntity
 {
-    private Activity()
-    {
-    }
+    private Activity() { }
 
     internal Activity(
         Guid lessonId,
@@ -17,7 +15,7 @@ public sealed class Activity : PublishableEntity
         int order,
         string prompt,
         string contentJson
-    )
+    ) : base(title, order)
     {
         if (lessonId == Guid.Empty)
             throw new DomainException("Lesson is required.");
@@ -25,22 +23,9 @@ public sealed class Activity : PublishableEntity
         if (!Enum.IsDefined(type))
             throw new DomainException("Invalid activity type.");
 
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Activity title is required.");
-        // you can do this instead
-        // ArgumentException.ThrowIfNullOrWhiteSpace(title);
-
-        if (string.IsNullOrWhiteSpace(prompt))
-            throw new DomainException("Activity prompt is required.");
-
-        if (order < 1)
-            throw new DomainException("Activity order must be greater than zero.");
-
         LessonId = lessonId;
         Type = type;
-        Title = title.Trim();
-        Prompt = prompt.Trim();
-        Order = order;
+        Prompt = ValidatePrompt(prompt);
         ContentJson = contentJson;
     }
 
@@ -48,28 +33,17 @@ public sealed class Activity : PublishableEntity
 
     public ActivityType Type { get; private set; }
 
-    public string Title { get; private set; } = null!;
-
-    public int Order { get; private set; }
-
     public string Prompt { get; private set; } = null!;
 
     public string ContentJson { get; private set; } = "{}";
 
-    public void Rename(string title)
+    public void ChangePrompt(string prompt) => Prompt = ValidatePrompt(prompt);
+
+    private static string ValidatePrompt(string prompt)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new DomainException("Activity title is required.");
-
-        Title = title.Trim();
-    }
-
-    public void ChangePrompt(string prompt)
-    {
-        if (string.IsNullOrWhiteSpace(prompt))
-            throw new DomainException("Activity prompt is required.");
-
-        Prompt = prompt.Trim();
+        return string.IsNullOrWhiteSpace(prompt)
+            ? throw new DomainException("Activity prompt is required.")
+            : prompt.Trim();
     }
 
     public void UpdateContent(string content)
@@ -78,13 +52,5 @@ public sealed class Activity : PublishableEntity
             throw new DomainException("Activity content is required.");
 
         ContentJson = content.Trim();
-    }
-
-    public void ChangeOrder(int order)
-    {
-        if (order < 1)
-            throw new DomainException("Activity order must be greater than zero.");
-
-        Order = order;
     }
 }

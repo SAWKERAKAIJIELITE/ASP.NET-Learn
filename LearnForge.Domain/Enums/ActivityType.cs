@@ -3,10 +3,10 @@ namespace LearnForge.Domain.Enums;
 public enum ActivityType
 {
     Article = 1,
-    CodeChallenge = 3,
-    DebugChallenge = 4,
-    MultipleChoice = 5,
-    FillInBlank = 6,
-    CodeOrdering = 7,
-    OutputPrediction = 8
+    CodeChallenge = 2,
+    DebugChallenge = 3,
+    MultipleChoice = 4,
+    FillInBlank = 5,
+    CodeOrdering = 6,
+    OutputPrediction = 7
 }
