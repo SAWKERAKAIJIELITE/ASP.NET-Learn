@@ -1,5 +1,4 @@
 using LearnForge.Infrastructure;
-using LearnForge.Application.Courses.CreateCourse;
 
 using System.Text.Json.Serialization;
 
@@ -15,7 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
+);
 builder.Services.AddHttpLogging(options =>
     // Log the request path, status codes, and query strings
     options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPropertiesAndHeaders
@@ -23,8 +23,8 @@ builder.Services.AddHttpLogging(options =>
 );
 
 builder.Services.AddValidation();
+
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddScoped<CreateCourseHandler>();
 
 var app = builder.Build();
 

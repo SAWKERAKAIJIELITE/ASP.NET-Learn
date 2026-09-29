@@ -1,5 +1,5 @@
 using LearnForge.Domain.Entities;
-using LearnForge.Domain.Common;
+using LearnForge.Domain.Enums;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,35 +15,42 @@ public sealed class LearnForgeDbContext(DbContextOptions<LearnForgeDbContext> op
 
     public DbSet<Activity> Activities => Set<Activity>();
 
+    public DbSet<LessonResource> LessonResources => Set<LessonResource>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.HasPostgresEnum<MaterialStatus>();
+        modelBuilder.HasPostgresEnum<ActivityType>();
+        modelBuilder.HasPostgresEnum<LessonResourceType>();
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LearnForgeDbContext).Assembly);
+
+        base.OnModelCreating(modelBuilder);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    // entry.Entity.UpdatedAt = DateTime.UtcNow;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
-                    break;
-                case EntityState.Detached:
-                case EntityState.Unchanged:
-                case EntityState.Deleted:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+    // public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    // {
+    //     foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+    //     {
+    //         switch (entry.State)
+    //         {
+    //             // case EntityState.Added:
+    //             //     entry.Entity.CreatedAt = DateTime.UtcNow;
+    //             //     // entry.Entity.UpdatedAt = DateTime.UtcNow;
+    //             //     break;
+    //             case EntityState.Modified:
+    //                 entry.Entity.UpdatedAt = DateTime.UtcNow;
+    //                 break;
+    //             case EntityState.Added:
+    //             case EntityState.Detached:
+    //             case EntityState.Unchanged:
+    //             case EntityState.Deleted:
+    //                 break;
+    //             default:
+    //                 throw new ArgumentOutOfRangeException();
+    //         }
+    //     }
 
-        return await base.SaveChangesAsync(cancellationToken);
-    }
+    //     return await base.SaveChangesAsync(cancellationToken);
+    // }
 }

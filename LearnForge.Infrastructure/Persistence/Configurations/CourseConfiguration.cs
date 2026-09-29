@@ -1,4 +1,5 @@
 using LearnForge.Domain.Entities;
+using LearnForge.Infrastructure.Persistence.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,26 +13,18 @@ public sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.ToTable("courses");
 
-        builder.HasKey(x => x.Id);
+        builder.ConfigureEntity();
 
-        builder.Property(x => x.Title).IsRequired().HasMaxLength(200);
+        builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
 
-        builder.Property(x => x.Description).HasMaxLength(2000);
-
-        builder.Property(x => x.Status).IsRequired();
+        builder.ComplexProperty(x => x.Settings);
 
         builder.Property(x => x.InstructorId).IsRequired();
-
-        builder.Property(x => x.CreatedAt).IsRequired();
-
-        builder.Property(x => x.UpdatedAt);
-
-        builder.Property(x => x.DeletedAt);
 
         builder.HasMany(x => x.Modules)
             .WithOne()
             .HasForeignKey(x => x.CourseId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasIndex(x => x.InstructorId);
     }

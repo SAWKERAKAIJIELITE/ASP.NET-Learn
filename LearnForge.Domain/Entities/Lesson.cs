@@ -6,9 +6,7 @@ namespace LearnForge.Domain.Entities;
 
 public sealed class Lesson : OrderedEntity
 {
-    private Lesson()
-    {
-    }
+    private Lesson() { }
 
     internal Lesson(
         Guid courseModuleId,
