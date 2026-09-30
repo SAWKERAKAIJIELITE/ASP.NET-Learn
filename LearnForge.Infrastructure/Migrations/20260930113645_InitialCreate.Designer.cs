@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LearnForge.Infrastructure.Migrations
 {
     [DbContext(typeof(LearnForgeDbContext))]
-    [Migration("20260929105346_InitialCreate")]
+    [Migration("20260930113645_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -38,7 +38,7 @@ namespace LearnForge.Infrastructure.Migrations
                     b.Property<string>("ContentJson")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasDefaultValue("{}");
 
                     b.Property<DateTime>("CreatedAt")
@@ -61,8 +61,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
+                        .HasColumnType("material_status")
+                        .HasDefaultValueSql("'draft'::material_status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -70,7 +70,7 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer");
+                        .HasColumnType("activity_type");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamptz");
@@ -79,9 +79,7 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.HasIndex("DeletedAt");
 
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("Type", "Prompt", "ContentJson")
+                    b.HasIndex("LessonId", "Order")
                         .IsUnique();
 
                     b.ToTable("activities", null, t =>
@@ -118,8 +116,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
+                        .HasColumnType("material_status")
+                        .HasDefaultValueSql("'draft'::material_status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -188,8 +186,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
+                        .HasColumnType("material_status")
+                        .HasDefaultValueSql("'draft'::material_status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -243,8 +241,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
+                        .HasColumnType("material_status")
+                        .HasDefaultValueSql("'draft'::material_status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -291,8 +289,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(1);
+                        .HasColumnType("material_status")
+                        .HasDefaultValueSql("'draft'::material_status");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -300,7 +298,7 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer");
+                        .HasColumnType("lesson_resource_type");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamptz");
@@ -314,9 +312,7 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.HasIndex("DeletedAt");
 
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("Title", "Url", "Type")
+                    b.HasIndex("LessonId", "Order")
                         .IsUnique();
 
                     b.ToTable("lesson_resources", null, t =>

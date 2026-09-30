@@ -30,7 +30,10 @@ public static class EntityTypeBuilderExtension
         builder.ConfigureBaseEntity();
 
         builder.Property(x => x.Title).IsRequired().HasMaxLength(200);
-        builder.Property(x => x.Status).HasDefaultValue(MaterialStatus.Draft)
+        builder.Property(x => x.Status)
+            .HasColumnType("material_status")
+            // .HasDefaultValue(MaterialStatus.Draft)
+            .HasDefaultValueSql("'draft'::material_status")
             .HasSentinel(default);
 
         builder.ToTable(t =>

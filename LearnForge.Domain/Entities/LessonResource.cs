@@ -37,11 +37,13 @@ public sealed class LessonResource : OrderedEntity
             (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps);
     }
 
-    private static string ConvertUrlStringToAbsoluteUri(string url)
+    private static string ConvertUrlStringToAbsoluteUri(string? url)
     {
-        return CheckUrlString(url, out Uri uri)
-            ? throw new DomainException("Resource URL must be a valid http or https address.")
-            : uri.AbsoluteUri;
+        return string.IsNullOrWhiteSpace(url)
+            ? throw new DomainException("Resource URL is required.")
+            : CheckUrlString(url, out Uri uri)
+                ? throw new DomainException("Resource URL must be a valid http or https address.")
+                : uri.AbsoluteUri;
     }
 
     private static LessonResourceType ValidateResourceType(LessonResourceType type)

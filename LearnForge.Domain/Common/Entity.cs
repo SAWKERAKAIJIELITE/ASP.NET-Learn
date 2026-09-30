@@ -6,7 +6,7 @@ namespace LearnForge.Domain.Common;
 
 public abstract class Entity : BaseEntity
 {
-    public string Title { get; private set; }
+    public string Title { get; private set; } = null!;
 
     public MaterialStatus Status { get; private set; } = MaterialStatus.Draft;
 

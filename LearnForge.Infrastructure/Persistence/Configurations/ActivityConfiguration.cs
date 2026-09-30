@@ -14,15 +14,16 @@ public sealed class ActivityConfiguration : IEntityTypeConfiguration<Activity>
 
         builder.ConfigureOrderedEntity();
 
-        builder.Property(x => x.Type).IsRequired();
+        builder.Property(x => x.Type).HasColumnType("activity_type").IsRequired();
 
         builder.Property(x => x.Prompt).IsRequired().HasColumnType("text");
 
-        builder.Property(x => x.ContentJson).IsRequired().HasColumnType("text").HasDefaultValue("{}");
+        builder.Property(x => x.ContentJson).IsRequired().HasColumnType("jsonb").HasDefaultValue("{}");
 
         builder.Property(x => x.LessonId).IsRequired();
 
-        builder.HasIndex(x => new { x.Type, x.Prompt, x.ContentJson }).IsUnique();
+        // builder.HasIndex(x => new { x.Type, x.Prompt, x.ContentJson }).IsUnique();
+        builder.HasIndex(x => new { x.LessonId, x.Order }).IsUnique();
 
         builder.ToTable(t =>
             t.HasCheckConstraint($"CK_{nameof(Activity)}_Prompt_NotEmpty", "LENGTH(TRIM(\"Prompt\")) > 0")

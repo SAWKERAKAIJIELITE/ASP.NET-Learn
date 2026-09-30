@@ -32,7 +32,7 @@ namespace LearnForge.Infrastructure.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1)
+                    Status = table.Column<int>(type: "material_status", nullable: false, defaultValueSql: "'draft'::material_status")
                 },
                 constraints: table =>
                 {
@@ -51,7 +51,7 @@ namespace LearnForge.Infrastructure.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    Status = table.Column<int>(type: "material_status", nullable: false, defaultValueSql: "'draft'::material_status"),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -78,7 +78,7 @@ namespace LearnForge.Infrastructure.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    Status = table.Column<int>(type: "material_status", nullable: false, defaultValueSql: "'draft'::material_status"),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -99,14 +99,14 @@ namespace LearnForge.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "activity_type", nullable: false),
                     Prompt = table.Column<string>(type: "text", nullable: false),
-                    ContentJson = table.Column<string>(type: "text", nullable: false, defaultValue: "{}"),
+                    ContentJson = table.Column<string>(type: "jsonb", nullable: false, defaultValue: "{}"),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    Status = table.Column<int>(type: "material_status", nullable: false, defaultValueSql: "'draft'::material_status"),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -129,12 +129,12 @@ namespace LearnForge.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
                     Url = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "lesson_resource_type", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamptz", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamptz", nullable: true),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
+                    Status = table.Column<int>(type: "material_status", nullable: false, defaultValueSql: "'draft'::material_status"),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -156,14 +156,9 @@ namespace LearnForge.Infrastructure.Migrations
                 column: "DeletedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_activities_LessonId",
+                name: "IX_activities_LessonId_Order",
                 table: "activities",
-                column: "LessonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_activities_Type_Prompt_ContentJson",
-                table: "activities",
-                columns: new[] { "Type", "Prompt", "ContentJson" },
+                columns: new[] { "LessonId", "Order" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -193,14 +188,9 @@ namespace LearnForge.Infrastructure.Migrations
                 column: "DeletedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_lesson_resources_LessonId",
+                name: "IX_lesson_resources_LessonId_Order",
                 table: "lesson_resources",
-                column: "LessonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_lesson_resources_Title_Url_Type",
-                table: "lesson_resources",
-                columns: new[] { "Title", "Url", "Type" },
+                columns: new[] { "LessonId", "Order" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
