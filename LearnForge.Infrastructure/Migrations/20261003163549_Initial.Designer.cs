@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LearnForge.Infrastructure.Migrations
 {
     [DbContext(typeof(LearnForgeDbContext))]
-    [Migration("20260930113645_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261003163549_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,8 +61,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("material_status")
-                        .HasDefaultValueSql("'draft'::material_status");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -70,7 +70,7 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("activity_type");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamptz");
@@ -78,6 +78,10 @@ namespace LearnForge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeletedAt");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Type");
 
                     b.HasIndex("LessonId", "Order")
                         .IsUnique();
@@ -116,8 +120,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("material_status")
-                        .HasDefaultValueSql("'draft'::material_status");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -153,6 +157,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.HasIndex("InstructorId");
 
+                    b.HasIndex("Status");
+
                     b.ToTable("courses", null, t =>
                         {
                             t.HasCheckConstraint("CK_Course_Title_NotEmpty", "LENGTH(TRIM(\"Title\")) > 0");
@@ -186,8 +192,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("material_status")
-                        .HasDefaultValueSql("'draft'::material_status");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -200,6 +206,8 @@ namespace LearnForge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeletedAt");
+
+                    b.HasIndex("Status");
 
                     b.HasIndex("CourseId", "Order")
                         .IsUnique();
@@ -241,8 +249,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("material_status")
-                        .HasDefaultValueSql("'draft'::material_status");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -255,6 +263,8 @@ namespace LearnForge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeletedAt");
+
+                    b.HasIndex("Status");
 
                     b.HasIndex("CourseModuleId", "Order")
                         .IsUnique();
@@ -289,8 +299,8 @@ namespace LearnForge.Infrastructure.Migrations
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("material_status")
-                        .HasDefaultValueSql("'draft'::material_status");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -298,7 +308,7 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("lesson_resource_type");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamptz");
@@ -311,6 +321,10 @@ namespace LearnForge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeletedAt");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Type");
 
                     b.HasIndex("LessonId", "Order")
                         .IsUnique();
@@ -325,12 +339,163 @@ namespace LearnForge.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LearnForge.Infrastructure.Persistence.ReferenceData.ActivityTypeLookup", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("activity_types", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "Article"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "CodeChallenge"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "DebugChallenge"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "MultipleChoice"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "FillInBlank"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Code = "CodeOrdering"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Code = "OutputPrediction"
+                        });
+                });
+
+            modelBuilder.Entity("LearnForge.Infrastructure.Persistence.ReferenceData.LessonResourceTypeLookup", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("lesson_resource_types", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "Article"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "Video"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "Docs"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "Repos"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "Website"
+                        });
+                });
+
+            modelBuilder.Entity("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("material_statuses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "Draft"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "Published"
+                        });
+                });
+
             modelBuilder.Entity("LearnForge.Domain.Entities.Activity", b =>
                 {
                     b.HasOne("LearnForge.Domain.Entities.Lesson", null)
                         .WithMany("Activities")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Status")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.ActivityTypeLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Type")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnForge.Domain.Entities.Course", b =>
+                {
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Status")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -341,6 +506,12 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Status")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LearnForge.Domain.Entities.Lesson", b =>
@@ -350,6 +521,12 @@ namespace LearnForge.Infrastructure.Migrations
                         .HasForeignKey("CourseModuleId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Status")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LearnForge.Domain.Entities.LessonResource", b =>
@@ -358,6 +535,18 @@ namespace LearnForge.Infrastructure.Migrations
                         .WithMany("Resources")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.MaterialStatusLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Status")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnForge.Infrastructure.Persistence.ReferenceData.LessonResourceTypeLookup", null)
+                        .WithMany()
+                        .HasForeignKey("Type")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

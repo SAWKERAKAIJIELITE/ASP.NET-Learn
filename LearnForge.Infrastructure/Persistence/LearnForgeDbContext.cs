@@ -1,5 +1,6 @@
 using LearnForge.Domain.Entities;
 using LearnForge.Domain.Enums;
+using LearnForge.Infrastructure.Persistence.ReferenceData;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,8 @@ public sealed class LearnForgeDbContext(DbContextOptions<LearnForgeDbContext> op
     public DbSet<Activity> Activities => Set<Activity>();
 
     public DbSet<LessonResource> LessonResources => Set<LessonResource>();
+
+    public DbSet<MaterialStatusLookup> MaterialStatuses => Set<MaterialStatusLookup>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

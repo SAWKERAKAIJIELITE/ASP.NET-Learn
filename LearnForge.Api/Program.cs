@@ -1,4 +1,6 @@
 using LearnForge.Infrastructure;
+using LearnForge.Api.Middleware;
+using LearnForge.Application;
 
 using System.Text.Json.Serialization;
 
@@ -26,6 +28,10 @@ builder.Services.AddValidation();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddApplication();
+builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,9 +43,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpLogging();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();

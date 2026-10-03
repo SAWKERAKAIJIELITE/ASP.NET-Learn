@@ -1,5 +1,6 @@
 using LearnForge.Domain.Entities;
 using LearnForge.Infrastructure.Persistence.Extensions;
+using LearnForge.Infrastructure.Persistence.ReferenceData;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,7 +15,12 @@ public sealed class ActivityConfiguration : IEntityTypeConfiguration<Activity>
 
         builder.ConfigureOrderedEntity();
 
-        builder.Property(x => x.Type).HasColumnType("activity_type").IsRequired();
+        builder.Property(x => x.Type).IsRequired();
+        builder.HasOne<ActivityTypeLookup>()
+            .WithMany()
+            .HasForeignKey(x => x.Type)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(x => x.Prompt).IsRequired().HasColumnType("text");
 

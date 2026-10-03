@@ -6,6 +6,8 @@ using Npgsql;
 using LearnForge.Domain.Enums;
 using LearnForge.Infrastructure.Persistence;
 using LearnForge.Infrastructure.Persistence.Interceptors;
+using LearnForge.Application.Common.Interfaces;
+using LearnForge.Infrastructure.Persistence.Repositories;
 
 namespace LearnForge.Infrastructure;
 
@@ -29,6 +31,8 @@ public static class DependencyInjection
         services.AddDbContext<LearnForgeDbContext>(options =>
             options.UseNpgsql(dataSource).AddInterceptors(new SoftDeleteInterceptor())
         );
+
+        services.AddScoped<ICourseRepository, CourseRepository>();
 
         return services;
     }

@@ -1,5 +1,6 @@
 using LearnForge.Domain.Common;
 using LearnForge.Domain.Enums;
+using LearnForge.Infrastructure.Persistence.ReferenceData;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -30,11 +31,26 @@ public static class EntityTypeBuilderExtension
         builder.ConfigureBaseEntity();
 
         builder.Property(x => x.Title).IsRequired().HasMaxLength(200);
+        // builder.Property(x => x.Status)
+        //     // .HasColumnType("material_status")
+        //     // .HasDefaultValue(MaterialStatus.Draft)
+        //     // .HasConversion<string>()
+        //     // .HasConversion(
+        //     //     v => v.ToString().ToLower(),
+        //     //     v => Enum.Parse<MaterialStatus>(v, true)
+        //     // )
+        //     // .HasDefaultValueSql("'draft'::material_status")
+        //     .HasSentinel(default);
+
         builder.Property(x => x.Status)
-            .HasColumnType("material_status")
-            // .HasDefaultValue(MaterialStatus.Draft)
-            .HasDefaultValueSql("'draft'::material_status")
+            .HasDefaultValue(MaterialStatus.Draft)
             .HasSentinel(default);
+
+        builder.HasOne<MaterialStatusLookup>()
+            .WithMany()
+            .HasForeignKey(x => x.Status)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.ToTable(t =>
             t.HasCheckConstraint($"CK_{typeof(T).Name}_Title_NotEmpty", "LENGTH(TRIM(\"Title\")) > 0")
